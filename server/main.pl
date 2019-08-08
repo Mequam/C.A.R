@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 use lib "parser";
 use strict;
 use warnings;
