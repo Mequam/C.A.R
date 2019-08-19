@@ -54,6 +54,7 @@ sub parseS
 	
 	#dereference the oppsRef to get acces to the varaibles stored within it	
 	my @oppsArr = @$oppsRef;
+	my @funcsArr = @$funcsRef;
 	
 	#default the parenthasis if it is not given
 	if (not defined $open) {$open = '(';}
@@ -102,6 +103,16 @@ sub parseS
 		
 	}	
 	#we have been unable to find any valid operations to check, this is where we store the functions that we want to parse
+	for (my $j = 0; $j < scalar(@funcsArr);$j++)
+	{
+		print "checking $funcsArr[$j][1] against ",substr($state,0,length($funcsArr[$j][1])),"\n";	
+		if (substr($state,0,length($funcsArr[$j][1])) eq $funcsArr[$j][1])
+		{
+			#its currently finding the function successfully the next step is to parse out the arguments
+			#for that function and return the parsed function args
+			print "we found a function match!\n";
+		}
+	}
 	return int($state);
 }
 
@@ -139,6 +150,20 @@ my $divRef = sub
 	return $x/$y;
 };
 
+sub fact 
+{
+	my $num = shift;
+	if ($num < 0)
+	{return -1;}
+	elsif ($num == 1)
+	{
+		return 1;
+	}
+	else
+	{
+		return $num*fact($num-1);
+	}	
+};
 sub test 
 {
 	print inP "test";
@@ -153,8 +178,9 @@ sub test
 		my $inp = <STDIN>;
 		$inp = substr $inp,0,length($inp) - 1;
 		print "evaluating $inp\n";
-		my $result = parseS($inp,[[$addRef,"+"],[$subRef,"-"],[$multRef,'*'],[$divRef,'/']],[],"(",")");
+		my $result = parseS($inp,[[$addRef,"+"],[$subRef,"-"],[$multRef,'*'],[$divRef,'/']],[[\&fact,'fact']],"(",")");
 		print "final result: $result\n";
 	}
 }
+test();
 1;
